@@ -1,3 +1,4 @@
+from pathlib import Path
 
 import pandas as pd
 import numpy as np
@@ -91,18 +92,10 @@ st.markdown(
 # CONSTANTES
 # ============================================================
 
-RUTA_MODELO = "../models/modelo_final.joblib"
-from pathlib import Path
-import pandas as pd
-import streamlit as st
-
 BASE_DIR = Path(__file__).resolve().parent.parent        # raíz del repo
 RUTA_DATOS = BASE_DIR / "data" / "processed" / "inferencia_df_transformado.csv"
+RUTA_MODELO = BASE_DIR / "models" / "modelo_final.joblib"
 
-@st.cache_data
-def cargar_datos():
-    return pd.read_csv(RUTA_DATOS)
-    
 COLUMNAS_LAG = [
     "unidades_vendidas_lag_1",
     "unidades_vendidas_lag_2",
@@ -126,6 +119,12 @@ COLUMNAS_COMPETENCIA = [
 
 @st.cache_data
 def cargar_datos():
+
+    if not RUTA_DATOS.exists():
+        raise FileNotFoundError(
+            f"No se encontró el archivo de datos: {RUTA_DATOS}"
+        )
+
     return pd.read_csv(RUTA_DATOS)
 
 
@@ -420,41 +419,20 @@ def actualizar_lags(
         return datos
 
     prediccion_anterior = predicciones[-1]
+    anterior = indice - 1
 
-    # Guardamos los valores anteriores antes de desplazarlos.
-    valores_lag = []
+    # Los lags de hoy se arman desde los lags YA ACTUALIZADOS de ayer:
+    #   lag_1(hoy) = predicción de ayer
+    #   lag_k(hoy) = lag_(k-1) de ayer, para k = 2..7
+    nuevos_lags = [prediccion_anterior]
 
-    for columna in COLUMNAS_LAG:
-        valores_lag.append(
-            float(datos.loc[indice, columna])
-        )
-
-    # lag_1 recibe la predicción del día anterior.
-    datos.loc[
-        indice,
-        "unidades_vendidas_lag_1"
-    ] = prediccion_anterior
-
-    # Desplazamiento de los lags.
     for numero_lag in range(2, 8):
-
-        columna_actual = (
-            "unidades_vendidas_lag_"
-            + str(numero_lag)
+        nuevos_lags.append(
+            float(datos.loc[anterior, "unidades_vendidas_lag_" + str(numero_lag - 1)])
         )
 
-        columna_anterior = (
-            "unidades_vendidas_lag_"
-            + str(numero_lag - 1)
-        )
-
-        datos.loc[
-            indice,
-            columna_actual
-        ] = datos.loc[
-            indice,
-            columna_anterior
-        ]
+    for columna, valor in zip(COLUMNAS_LAG, nuevos_lags):
+        datos.loc[indice, columna] = valor
 
     # ========================================================
     # MEDIA MÓVIL RECURSIVA
