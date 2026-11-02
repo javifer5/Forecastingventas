@@ -92,8 +92,17 @@ st.markdown(
 # ============================================================
 
 RUTA_MODELO = "../models/modelo_final.joblib"
-RUTA_DATOS = "../data/processed/df_procesado.csv"
+from pathlib import Path
+import pandas as pd
+import streamlit as st
 
+BASE_DIR = Path(__file__).resolve().parent.parent        # raíz del repo
+RUTA_DATOS = BASE_DIR / "data" / "processed" / "inferencia_df_transformado.csv"
+
+@st.cache_data
+def cargar_datos():
+    return pd.read_csv(RUTA_DATOS)
+    
 COLUMNAS_LAG = [
     "unidades_vendidas_lag_1",
     "unidades_vendidas_lag_2",
