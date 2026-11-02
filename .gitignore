@@ -1,0 +1,38 @@
+# Entornos y secretos
+.venv/
+venv/
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Datos y artefactos generados
+# Se conserva la estructura mediante archivos .gitkeep
+data/raw/*
+!data/raw/.gitkeep
+#data/processed/*
+!data/processed/.gitkeep
+data/external/*
+!data/external/.gitkeep
+#models/*
+!models/.gitkeep
+reports/figures/*
+!reports/figures/.gitkeep
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Sistema y editores
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
