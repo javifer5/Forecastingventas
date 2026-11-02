@@ -93,7 +93,7 @@ st.markdown(
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent        # raíz del repo
-RUTA_DATOS = BASE_DIR / "data" / "processed" / "inferencia_df_transformado.csv"
+RUTA_DATOS = BASE_DIR / "data" / "processed" / "df_procesado.csv"
 RUTA_MODELO = BASE_DIR / "models" / "modelo_final.joblib"
 
 COLUMNAS_LAG = [
@@ -138,7 +138,7 @@ try:
 except Exception as error:
     st.error(
         "❌ No se pudo cargar el archivo "
-        "`data/processed/inferencia_df_transformado.csv`."
+        "`data/processed/df_procesado.csv`."
     )
     st.exception(error)
     st.stop()
