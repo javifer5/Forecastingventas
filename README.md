@@ -1,4 +1,4 @@
-# 📈 Pronóstico de ventas 
+# 📈 Pronóstico de ventas  
 
 [![Abrir la app](https://img.shields.io/badge/Abrir%20la%20app-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://ventas-simuladas.streamlit.app/)
 
